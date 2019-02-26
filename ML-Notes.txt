@@ -1,0 +1,595 @@
+Supervised vs Unsupervised vs Semisupervised vs Reinforcement Learning
+Online vs Batch
+Instance-based vs Model-Based
+
+Training Set consist of individual training instance (sample)
+
+Performance measure   eg. Accuracy
+
+Accuracy = Correct count / Total count
+Precision = Total Positive / (Total Positive + False Positive)    i.e. fraction of positive predictions that are correct
+Recall = Total Positive / (Total Positive + False Negative) i.e. fraction of positive cases that was predicted correctly
+
+
+Data Mining - applying ML techniques on large amounts of data to discover patterns not immediately apparent
+
+--------
+Labelled
+
+Classification and Regression are examples of Supervised Learning
+
+Regression = Predict Target numeric value given a set of features called predictors
+
+Logistice Regression can be used for classification
+
+Supervised Learning Algo
+k-Nearest neighbors
+Linear Regression
+Logistic Regression
+Support Vector Machines (SVMs)
+Decision Tress and Random Forests
+Neural Networks ** some can be unsupervised or semisupervised
+
+------------
+Unlabelled
+
+Unsupervised Learning algo
+Clustering
+  - k-Means
+  - Hierarchical Cluster Analisis (HCA)
+  - Expectation Maximization
+
+Visualization and dimensionality reduction
+  - Principal Component Analysis (PCA)
+  - Kernel PCA
+  - Locally-Linear Embedding (LLE)
+  - t-distributed Stocahistic Neighbor Embedding (t-SNE)
+
+Association rule learning
+   Apriori
+   Eclat
+
+
+Dimensionality Reduction goal is to simplify data without losing too much information
+- eg merge several correlated features into one (feature extraction)
+
+Anomaly detection (unsupervised learning task)
+
+Association rule learning  - dig into large amounts of data and discover interesting relations between attributed
+
+-------------------
+
+Semisupervised learning deal with partially labeled training data
+ - combination of unsupervised and supervised algorithms
+
+----------
+
+Reinforcement Learning - agents perform actions and get rewards / penalties. It then learns the best strategy (policy) 
+to get the most reward over time
+eg. DeepMind's AlphaGo
+------------
+
+
+Batch learning system is incapable of learning incrementally
+offline learning
+maybe automated
+
+---
+
+Online learning - train system incrementally with individual or mini-batches of data
+can adapt to changes rapidly
+out-of-core learning (large datasets that cannot fit in memory)
+
+learning rate - how fast it adapts to changes. 
+               - high learning rate also tend to quickly forget old ata
+               - low learning rate adapts slower but is less sensitive to noise
+
+problem is bad data will cause performance to decline (need to monitor and revert)
+----
+
+
+Instance-based learning
+  - trivial form of learning (learn by heart)
+  - measure of similarity (generalizes to new cases using a similarity meausre)
+
+-----------
+
+Model-based learning
+  - generalize from a set of examples to build a model
+
+-------
+
+Two things that can go wrong
+
+- bad algorithm
+- bad data
+
+
+Bad Data
+- insufficient quality data
+- nonrepresentative data
+   - if sample is too small (sampling noise - nonrepresentative data as a result of chance)
+   - sampling bias (large set but sampling method is flawed)
+- poor-quality data (erros, outlier, noise)
+- irrelevant features 
+   - feature engineering
+       - feature selection
+       - feature extraction
+       - create new feature by gathering new data
+
+
+Bad algorithm
+  - overfitting (detecting patterns in noise) - model is too complex relative to the amount of noise in the training set
+       -possible solutions 
+	  - simplify model (fewer parameter in algo (degrees of freedom) - find the right balance between fitting the data perfectly and keeping the model simple enough to ensure it generalize well 
+               , reduce attributes, contraining model (is called reqularization))
+          - gather more training data
+          - reduce noise (fix data error, remove outliers)
+  - underfitting - model is too simple to learn the undelying struture of data
+       - possible fixes
+            - selecting a more powerful model (mode parameters)
+            - better features (via feature engineering)
+            - reducing constrains on the model (reducing the regularization hyperparameter)
+
+
+The amount of regularization to apply during learning can be controlled by a hyperparameter. 
+A hyperparameter is a parameter of a learning algorithm(not of the model)
+
+------------
+
+
+training set 80%
+test set 20%  (by evaluating the model on the test set you get an estimate of the generalization error)
+
+The error rate on new cases is called the Generalization error( out-of-sample error)
+
+
+Validation set can be used to test multiple models with various hyperparameters
+
+Cross-validation
+ - training set is split into complementary subsets and each model is trained against a different combination of these subsets
+   and validated against the remaining parts. once teh model type and hyperparamters have been seleted, a final model is trained using these hyperparamters on
+   the full trainnig set and the generalized error is measured on the test set
+
+
+No free lunch theorem
+ - if you make no assumptions then there is no reason to prefer one model over any other
+
+
+================================
+
+Pipelines
+univariate vs multivariate
+multivariate regression - uses multiple features to predict a value
+
+Root Mean Square Error (corresponds to the Euclidian norm)
+
+Prediction function (hypothesis)
+Cost function
+
+Mean Absolute Error   aka   Average Absolute Deviation (Manhattan norm)
+
+
+The higher the norm index, the more it focuses on large values and neglets small ones
+RMSE performas very well when outliers are rare like in a bell curve
+
+
+pip --version
+
+Data snooping bias
+
+To avoid sampling bias (so that sample is representative ) use 
+Stratified Sampling - population is divided into homogeneous subgroups called strata
+		      then the right number of instances is sampled from each stratum to guarantee
+                      that the test set is representative of the overall population
+
+should not have too many strata and each strata should be large enough
+
+from sklearn.model_selection import StratifiedShuffleSplit
+
+Pearson's r  aka  Pearson Correlation coeeficient
+corr_matrix = housing.corr() #computes teh standard correlation coeeficient between every pair of attributes
+
+The	correlation	coefficient	only	measures	linear	correlations	
+(“if	x	goes	up,	then	y	generally	goes	up/down”).	
+It	may	completely miss	out	on	nonlinear	relationships	
+
+
+DataFrame
+dropna() drop() fillna()
+
+
+Scikit-Learn  Imputer
+
+from	sklearn.preprocessing	import	Imputer
+imputer	=	Imputer(strategy="median")
+
+
+Scikit-Learn API
+- Estimator ~ fit()     , (hyperparamter)imputer.strategy, (learned paramters)imputer.statistics_ 
+- Transformer ~ transform(), fit_transform()
+- Predictor ~ predict(), score()
+
+datasets are NumPy arrays or SciPy sparse matrices
+
+
+from sklearn.preprocessing import LabelEncoder
+encoder = LabelEncoder()
+
+encoder.lcasses_
+
+
+OneHotEncoder()
+
+
+Machine Learning algorithms don't perform well when the input numerical attributes have very different scales
+(scaling the target is generally not required)
+
+Feature Scaling
+ - min-max scaling  aka  normalization  (values are shifted and rescaled so that they range from 0-1)
+ - standardization (subtracts the mean value so mean becomes zero, divides by variance so the resulting distribution has unit variance)
+        - not bound values to specific range
+        - less affected by outliers
+
+Scikit
+MinMaxScaler
+StandardScaler
+
+
+only fit transfomers to the training set
+then use on training set and test set
+
+The	Pipeline	constructor	takes	a	list	of	name/estimator	pairs	defining	a	sequence	of	steps.	
+All	but	the last	estimator	must	be	transformers	(i.e.,	they	must	have	a	fit_transform()	method).	
+The	names	can	be anything	you	like	(as	long	as	they	don’t	contain	double	underscores	“__”). 
+
+When	you	call	the	pipeline’s	fit()	method,	it	calls	fit_transform()	sequentially	on	all	transformers, 
+passing	the	output	of	each	call	as	the	parameter	to	the	next	call,	until	it	reaches	the	
+final	estimator,	for which	it	just	calls	the	fit()	method
+
+------
+
+utility function (greated is better) vs cost function (lower is better)
+
+Ensemble Learning = building a model on top of many other models
+
+from sklearn.model_selection import GridSearchCV
+grid_search.best_params_
+grid_search.best_estimator_
+
+
+
+The	grid	search	approach	is	fine	when	you	are	exploring	relatively	few	combinations,	
+like	in	the	previous example,	but	when	the	hyperparameter	search	space	is	large,	
+it	is	often	preferable	to	use RandomizedSearchCV	instead
+
+
+Amazon Mechanical Turk
+CrowdFlower
+
+Standard Deviation (gamma) is the sqrt of variance
+variance is the average of squared deviation
+
+
+-----------------------------------
+
+try:
+    from sklearn.datasets import fetch_openml
+    mnist = fetch_openml('mnist_784', version=1, cache=True)
+    mnist.target = mnist.target.astype(np.int8) # fetch_openml() returns targets as strings
+    sort_by_target(mnist) # fetch_openml() returns an unsorted dataset
+except ImportError:
+    from sklearn.datasets import fetch_mldata
+    mnist = fetch_mldata('MNIST original')
+
+
+%matplotlib	inline 
+import	matplotlib 
+import	matplotlib.pyplot	as	plt
+some_digit	=	X[36000] 
+some_digit_image	=	some_digit.reshape(28,	28)
+plt.imshow(some_digit_image,	cmap=matplotlib.cm.binary,	interpolation="nearest")
+plt.axis("off") 
+plt.show()
+
+
+() tuples
+[] list
+{} dictionary
+
+
+The	SGDClassifier	relies	on	randomness	during	training	(hence	the	name	“stochastic”).	
+If	you	want	reproducible	results,	you should	set	the	random_state	parameter.
+
+K-fold	cross-validation	means	splitting	the	training	set	into K-folds
+
+accuracy	is	generally	not	the	preferred	performance	
+measure	for	classifiers, especially	when	you	are	dealing	with	skewed	datasets
+
+
+cross_val_score
+cross_val_predict
+
+Confusion Matrix
+
+Just	like	the	cross_val_score()	function,	cross_val_predict()	performs	K-fold	cross-validation, 
+but	instead	of	returning	the	evaluation	scores,	
+it	returns	the	predictions	made	on	each	test	fold.	
+This	means that	you	get	a	clean	prediction	for	each	instance	in	the	training	set	
+(“clean”	meaning	that	the	prediction	is made	by	a	model	that	never	saw	the	data	during	training
+
+>>>	from	sklearn.metrics	import	confusion_matrix 
+>>>	confusion_matrix(y_train_5,	y_train_pred) 
+array([[53272,		1307],							
+	[1077,		4344]])
+
+Each	row	in	a	confusion	matrix	represents	an	actual	class,	while	each	column	represents	a	predicted class.	
+The	first	row	of	this	matrix	considers	non-5	images	(the	negative	class):	
+53,272	of	them	were correctly	classified	as	non-5s	(they	are	called	true	negatives),	
+while	the	remaining	1,307	were	wrongly classified	as	5s	(false	positives).	
+The	second	row	considers	the	images	of	5s	(the	positive	class):	1,077 were	wrongly	classified	
+as	non-5s	(false	negatives),	while	the	remaining	4,344	were	correctly	classified as	5s	(true	positives).	
+A	perfect	classifier	would	have	only	true	positives	and	true	negatives,	
+so	its confusion	matrix	would	have	nonzero	values	only	on	its	main	diagonal	(top	left	to	bottom	right):
+
+
+the	accuracy	of	the	positive	predictions;	this	is	called	the	precision	of	the classifier
+TP = TP / (TP + FP)
+
+Recall aka  Sensitivity or TPR (True positive rate)
+
+Recall = TP / (TP + FN)
+
+
+The	F1	score	is	the	harmonic	mean	of precision	and	recall
+Whereas	the	regular	mean	treats	all	values	equally,	
+the	harmonic mean	gives	much	more	weight	to	low	values.	
+As	a	result,	the	classifier	will	only	get	a	high	F1	score	if both	recall	and	precision	are	high.
+
+F1 = 2 / ((1/Precision) + (1/Recall))
+
+The	F1	score	favors	classifiers	that	have	similar	precision	and	recall.
+
+Precision/Recall tradeoff
+
+Scikit-Learn	does	not	let	you	set	the	threshold	directly,	but	it	does	give	you	access	to	the	decision	scores that	it	uses	to	make	predictions.	Instead	of	calling	the	classifier’s	predict()	method,	you	can	call	its decision_function()	method,	which	returns	a	score	for	each	instance,	and	then	make	predictions	based on	those	scores	using	any	threshold	you	want
+
+The	SGDClassifier	uses	a	threshold	equal	to	0,	so	the	previous	code	returns	the	same	result	as	the predict()	method	(i.e.,	True).
+
+Receiver Operating Characteristic(ROC) = True Positive Rate aka recall / False Positive Rate
+
+False Positive Rate (FPR) = 1 - True Negative Rate
+
+TNR is also called Specificity
+
+ROC = Sensitivity (recall) vs (1 - specificity)
+
+	tradeoff:	the	higher	the	recall	(TPR),	the	more	false	positives	(FPR)	the	classifier
+
+One	way	to	compare	classifiers	is	to	measure	the	area	under	the	curve	(AUC).	A	perfect	classifier	will have	a	ROC	AUC	equal	to	1,	whereas	a	purely	random	classifier	will	have	a	ROC	AUC	equal	to	0.5. 
+
+
+	As	a rule	of	thumb,	you	should	prefer	the	PR	curve	whenever	the	positive	class	is	rare	or	when	you	care	more	about	the	false positives	than	the	false	negatives,	and	the	ROC	curve	otherwise.	For
+
+
+
+Binary Classifiers distinguish between 2 classes - Support Vector Machine Classifier, Linear Classifier
+Multiclass Classifiers (aka Multinomial Classifiers) can distinguish between more than 2 classes - Random Forest Classifier , Naive Bayes Classifier
+
+
+one-versus-all (OvA) strategy (aka one-versus-the-rest)
+eg. create one classifier for each digit (0-10) then get the decision score from each classifier for one image and select the class whose classifier outputs the highest score
+
+one-versus-one  (OvO) creates one binary classifier per digit pair
+N classes will need N x (N-1) /2 classifiers
+when you want to classify and image just run the image through all classifiers and see which class wins the most duels
+
+Scikit-Learn	detects	when	you	try	to	use	a	binary	classification	algorithm	for	a	multiclass	classification task,	and	it	automatically	runs	OvA	(except	for	SVM	classifiers	for	which	it	uses	OvO).
+
+sgd_clf.decision_function()
+
+forest_clf.predict_proba([some_digit])
+
+
+feature scaling in general improves accuracy by preventing certain features to dominate
+
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train.astype(np.float64))
+
+
+you	could	preprocess	the images	(e.g.,	using	Scikit-Image,	Pillow,	or	OpenCV)	to	make	some	patterns	
+stand	out	more,	such	as closed	loops. 
+
+
+Multilabel Classification outputs multiple binary labels
+
+>>>	y_train_knn_pred	=	cross_val_predict(knn_clf,	X_train,	y_train,	cv=3) 
+>>>	f1_score(y_train,	y_train_knn_pred,	average="macro")
+
+
+One	simple	option	is	to	give	each	label	a	weight	equal	to	its	
+support	(i.e.,	the number	of	instances	with	that	target	label).	To	do	this,	simply	set	average="weighted"	in	the	preceding code
+
+
+Multioutput Classification (aka multioutput-multiclass classification)
+Simply a generalization of multilabel classification where each label can be multiclass
+
+
+data augmentation / training set expansion is a technique to artificially grow the training set
+
+-----------------------------------
+
+Linear Regression - makes a prediction by computing a weighted sum of the input features, plus a constanc called the bias term (aka intercept term)
+
+
+to find the value of (theta) that minimisez the cost function, there is a closed-form solution ( a mathematical quation that gives the result directly)
+This is called the Normal Equation
+
+
+normal equation computes the inverse of an n x n matrix where n is the number of features
+the computational complexity of inverting such a matrix is O(n2.4) to O(n3)
+so the normal equation gets very slow when the number of features grows large
+however it is linear O(m) in regards to number of instances in the training set
+
+
+Gradient descent
+
+learning rate (hyperparameter)
+local minima
+global minimum
+plateau
+
+MSE cost function for a linear regression is a convex function (no local minima, just one global minimum)
+The cost function has the shape of a bowl, but it can be an elongated bowl if the features have very different scale
+
+**when using gradient descent, ensure all features have similar scale
+
+
+Batch Gradient Descent (vanilla gradient descent)
+- uses the whole training set at each iteration
+- very slow
+
+
+when the cost function is convex and its slope does not change abruptly it can be shown that BGD with a fixed learning rate has a convergence rate of
+O(1/iteration)
+
+
+
+Stochastic Gradient Descent
+- uses one random instance of the training set at each iteration
+- the cost function will bounce up and down, decreasing on average
+- final parameter values are good but not optimum
+- because it is irregular it has better change to find global minimum 
+
+One solution is to gradually reduce the learning rate. aka  Simulated Annealing because it resembles the process of annealing in metallurgy
+The function that determines the learning rate at each iteration is called the learning schedule
+
+from sklearn.linear_model import SGDRegressor
+
+
+
+Mini-batch Gradient Descent
+- at each step it computes teh gradients on small random sets of instances called mini-batches
+- less erratic than SGD
+- harder to escape local minima
+
+
+
+------------
+
+Polynomial Regression
+
+Can actually use a linear model to fit nonlinear data
+add powers of each feature as new features, then train a linear model on this extended set of features
+
+
+>>>	from	sklearn.preprocessing	import	PolynomialFeatures 
+>>>	poly_features	=	PolynomialFeatures(degree=2,	include_bias=False) 
+>>>	X_poly	=	poly_features.fit_transform(X)
+
+
+-----
+
+if a model performs well on the training data buy generalizes poorly according to the cross-validation metrics, then it is overfitting
+If it performs poorly on both, then it is underfitting
+
+
+look at learning curve
+plot the model's performace on the training set and the validation set as a function of the training set size
+
+- both cures reach a plateau , they are close and fairly high = underfitting
+- gap between the curves , means the model performs significanly better on the training data than on the validation = overfitting
+
+
+
+Bias/Variance tradeoff
+
+Bias 
+generalization error is due to wrong assumptions (eg linear model for quadratic data)
+high-bias model is most likely to undefit the training data
+
+Variance
+ - due to model's excessive sensitivity to small variations in the training data
+ - model with high degree on freedom (overfitting training data)
+
+Irreducbile error
+ - due to noise in the data itself
+ - must clean up the data
+
+Increasing a model's complexity will increase its variance and reduce its bias and vice versa
+
+
+
+--------------------
+Regularized Linear Models
+
+for polynomial model - reduce the number of polynomial degrees
+for linear model - constrain the weights of the model
+
+Ridge regression
+Lasso regression
+Elastic net
+
+
+Ridge Regression aka Tikhonov regularization is a regularized version of Linear Regression
+a regularization term is added to the cost function
+this should be added only during training
+
+another reason for cost fuction to differ from the performance measure used for testing is that a good training cost function should have optimization friendly derivatives
+while the performace measure used for testing should be as close as possible to the final objective
+
+the hyperparameter alpha controls how much to regularize
+if alpha = 0 then Ridge Regression is just Linear Regression
+if alpha is very large then all weights end up very close to zero and the result is a flat line going through the data's mean
+
+important to scale data
+
+Increasing alpha reduces the model variance but increases its bias
+
+The coefficient estimate produced by this method is aka the L2 norm
+
+
+>>>	from	sklearn.linear_model	import	Ridge 
+>>>	ridge_reg	=	Ridge(alpha=1,	solver="cholesky") 
+>>>	ridge_reg.fit(X,	y)
+
+>>>	sgd_reg	=	SGDRegressor(penalty="l2") 
+>>>	sgd_reg.fit(X,	y.ravel()) 
+>>>	sgd_reg.predict([[1.5]])
+
+
+
+Lasso Regression
+- L1 norm
+- tens to completely eliminate the weights of the least important features
+- automatically performs feature selection and outputs a sparse model (i.e with few non zero feature weights)
+
+Elastic net is a middle ground between Ridge Regression and Lasso Regression.
+control the mix ratio r
+when r = 0  then it is Ridge Regression
+when r = 1 then it is Lasso Regression
+
+
+**if suspect only a few features are actually useful, prefer Lasso or Elastic net
+
+Early Stopping = stop training as soon as the validation error reaches a minimum
+
+--------
+
+Logistic Regression
+
+A Logistic Regression model computes a weighted sum of the input features and outputs the logistic
+The Logistics aka logit is a sigmoid function that outputs a number between 0 and 1 
+
+logit is the log of the odds ratio
+
+odds ratio =   target outcome / 1 - target outcome
+
+inverse logit formula = (e exp p) / 1 + (e exp p)
+
+there is no known closed-form equation
+
+cost function is convex so gradient descent is guaranteed to find the global minimum
+
+
