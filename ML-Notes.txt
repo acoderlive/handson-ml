@@ -480,6 +480,9 @@ Mini-batch Gradient Descent
 
 Polynomial Regression
 
+Polynomial Regression is capable of finding relationships between features
+
+
 Can actually use a linear model to fit nonlinear data
 add powers of each feature as new features, then train a linear model on this extended set of features
 
@@ -498,8 +501,8 @@ If it performs poorly on both, then it is underfitting
 look at learning curve
 plot the model's performace on the training set and the validation set as a function of the training set size
 
-- both cures reach a plateau , they are close and fairly high = underfitting
-- gap between the curves , means the model performs significanly better on the training data than on the validation = overfitting
+- both curves reach a plateau , they are close and fairly high = underfitting
+- gap between the curves , means the model performs significantly better on the training data than on the validation = overfitting
 
 
 
@@ -560,15 +563,17 @@ The coefficient estimate produced by this method is aka the L2 norm
 
 
 
-Lasso Regression
+Lasso Regression (Least Absolute Shrinkage Selector Operator)
 - L1 norm
-- tens to completely eliminate the weights of the least important features
+- tends to completely eliminate the weights of the least important features
 - automatically performs feature selection and outputs a sparse model (i.e with few non zero feature weights)
 
 Elastic net is a middle ground between Ridge Regression and Lasso Regression.
-control the mix ratio r
-when r = 0  then it is Ridge Regression
+control the mix ratio r (with alpha = 1)
+when r = 0  then it is Ridge Regression  
 when r = 1 then it is Lasso Regression
+
+useful for large set of features
 
 
 **if suspect only a few features are actually useful, prefer Lasso or Elastic net
@@ -589,7 +594,39 @@ odds ratio =   target outcome / 1 - target outcome
 inverse logit formula = (e exp p) / 1 + (e exp p)
 
 there is no known closed-form equation
-
+cd 
 cost function is convex so gradient descent is guaranteed to find the global minimum
 
+Decision Boundaries
 
+------
+
+Softmax Regression (Multinomial Logistic Regression)
+
+Logistic Regression can be generalized to support multiple classes directly 
+
+Cross-Entropy cost function aka Log Loss.
+- it penalizes confident wrong prediction more than it rewards confident right predictions
+
+
+
+
+
+--- outside --
+R-Square : determines how much of a total variation in Y (dependent variable) is explained by the variation in X (independent variable)
+
+Forward selection , Backward elimination
+
+Forward selection starts with most significant predictor in the model and adds variable for each step
+Backward elimination starts with all predictors in the model and removes the least significant variable for each step
+
+------
+
+
+ref
+
+Normal Equation in Linear Regression
+https://www.geeksforgeeks.org/ml-normal-equation-in-linear-regression/
+
+Barch Gradient Descent
+http://mccormickml.com/2014/03/04/gradient-descent-derivation/
