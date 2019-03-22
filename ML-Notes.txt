@@ -10,6 +10,30 @@ Accuracy = Correct count / Total count
 Precision = Total Positive / (Total Positive + False Positive)    i.e. fraction of positive predictions that are correct
 Recall = Total Positive / (Total Positive + False Negative) i.e. fraction of positive cases that was predicted correctly
 
+https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+
+Sensitivity (aka recall) = TPR = TP / (TP + FN) = 1 - FNR
+Specificity = TNR = TN / (TN + FP) = 1 - FPR
+Precision (Positive Predictive Value) = PPV = TP / (TP + FP) = 1 - FDR
+Negative Predictive Value  = NPV = TN / (TN + FN) = 1 - FOR
+
+FDR (False Discovery Rate)
+FOR (False Omission Rate)
+
+
+FPR (fall-out  or probability of false alarm) = FP / (FP + TN)
+
+ROC (Receiver Operating Characteristic) = plot of TPR against FPR at various threshold settings
+   plot of Sensitivity vs (1 - Specificity)
+
+
+Confusion Matrix
+
+for Precision use columns
+for Recall (Sensitivity) use rows
+for Accuracy use Sum diagonal / total
+
+
 
 Data Mining - applying ML techniques on large amounts of data to discover patterns not immediately apparent
 
@@ -630,3 +654,160 @@ https://www.geeksforgeeks.org/ml-normal-equation-in-linear-regression/
 
 Barch Gradient Descent
 http://mccormickml.com/2014/03/04/gradient-descent-derivation/
+
+
+
+
+---------------
+
+Linear SVM Classification (Support Vector Machine)
+ - large margin classification (fitting the widest possible street)
+ - instances of the training that are located on the edge of the street are the "support vectors"
+ - adding more training instances "off the street" will not affect the decision boundary
+ - sensitve to feature scaling
+ 
+if we impose that all instances be off the street :- hard margin classification
+ - works only if data is linearly separable
+ - sensitve to outliers
+
+soft margin classification - objective is to find a good balance between keeping the stree as large as possible and limiting the margin violations
+C hyperparameter 
+ - smaller = wider street but more margin violations
+
+if SVM model is overfitting try regularizing it by reducing C
+
+
+Nonlinear SVM Classification
+ - use PolynomialFeatures transformer
+ - tradeoff ... low polynomial degree canoot deal with complex datasets, high polynomial degree is slow
+ - kernel trick
+ - adding similarity features (drop the original features)
+ - Gaussian RBF Kernel
+
+
+
+-----------------
+
+
+Decision Trees
+- can do classification, regression and multioutput tasks
+- dont' require feature scaling or centering
+- a node value tells you how many instances of each class thsi node applies to
+- the gini attribute measures its impurity: gini = 0 means all training instances it applies to belong to the same class
+- binary trees always have 2 children for nonleaf nodes
+- white box model
+- can output probability that an instance belongs to a particular class
+
+Scikit-Learn uses Classification and Regression Tree (CART) algorithm to train Decision Trees aka "growing" trees
+- CART is a greedy algorithm (it splits each level at lowest impurity regardless of it leading to a lower impurity at next level)
+- alternative is an NP-Complete problem O(exp(m))  m is number of features
+
+Using Entropy as impurity measure instead of Gini
+- zero if it contains instances of only one class
+- 
+
+- make very few assumptions about the training data (hence the tree structure adapts to the training data :- overfitting)
+- also called nonparametric model because the number of parameters is not determied prior to training
+- use regularization to restrict the degree of freedom (eg. restrict the maximum depth of the decision tree)
+- others: min_samples_split, min_samples_leaf, min_weight_fraction_leaf, max_leaf_nodes, max_features
+
+
+Regression
+ - training will split each region in a way that minimizes the MSE instead of the impurity
+
+limitation of Decision Trees
+- loves orthogonal decision boundaries (all splits perpendicular to an axis) 
+- this makes it sensitve to training set rotation
+- very sensitve to small variations in the training data
+
+
+--------------------------
+Ensemble Learning and Random Forest
+
+- wisdom of crowd
+- a group of predictors is called an ensemble (Ensemble Learning), Ensemble method
+- Random Forest (train a group of Decision Trees on a different random subset of the training set, then make predictions by number of votes using all Decision Trees)
+
+A majority-vote classfier is called a hard voting classifier
+
+- sufficient number of classifiers
+- should be sufficiently diverse
+
+weak learner, strong learner
+
+law of large numbers
+
+
+Way to get a diverse set of classifiers 
+1. use very different training algorithms
+2. use same training algo but train on different random subsets of the training set
+   - sampling with replacement == Bagging (bootstrap aggregating)
+   - sampling without replacement == Pasting
+
+the ensemble can make a prediction for a new instance by simply aggregating the predictions of all the predictors
+  - most frequent for classification
+  - average for regression
+  - individual predictor has a higher bias
+  - aggregation reduces both bias and variance (generally the ensemble has a similar bias but a lower variance than a single predictor trained on the original training set)
+
+bagging and pasting scale very well (parallel and even different servers)
+
+
+
+Soft Voting vs Hard Voting
+Suppose you have probabilities:
+0.45 0.45 0.90
+Then hard voting would give you a score of 1/3 (1 vote in favour and 2 against), so it would classify as a "negative".
+Soft voting would give you the average of the probabilities, which is 0.6, and would be a "positive". 
+Soft voting takes into account how certain each voter is, rather than just a binary input from the voter.
+
+
+for Bagging
+ - the remainder of the training instances not sampled are call out-of-bag(oob) instances  (they are not the same for each predictor)
+ - since the predictor has not seen these insstances they can be used for evaluation
+ - and evaluate the ensemble itself by averaging out the oob evaluations for each predictor
+ - oob_score=True
+
+
+BaggingClassifiers class supports sampling the features as well 
+- useful when dealing with high-dimensional inputs
+- sampling both training instances and featues is called Random Patches method
+- Keeping all training instances (i.e. bootstrap=False and max_samples = 1.0), but sampling features (i.e. bootstrap_features= True, max_features smaller than 1.0) is called Random Subspaces method
+	-- results in more predictor diversity (more bias , lower variance)
+
+
+Random Forest is an ensemble of Decision Trees
+ - generally trained via baggin method, max_samples set to size of training set
+ - it searches for best features among random subset of features when splitting a node
+     results in higher bias and lower variance
+
+Extra-Trees  (Extremely Randomized Tree ensemble)
+- uses random threshold for each feature rather than searching for best poosible thresholds
+
+
+Feature Importance
+- Scikit-Learn measures a feature's importance by looking at how much the tree nodes that use that feature reduce impurity on average (weighted)
+- Scikit-Learn computes the score automatically and scales it so that sum == 1
+
+Boosting (aka hypothesis boosting)
+- refers to any Ensemble method that can combine several weak learners into a strong learner.
+- train predictors sequentially each trying to correct its predecessor
+
+AdaBoost (adaptive boosting)
+- par a bit more attention to the training instances that the predecesor underfitted
+- results in the new predictors focusing more and more on the hard cases
+- training cannot be parallelized
+
+
+
+
+
+
+
+
+
+
+
+
+
+
